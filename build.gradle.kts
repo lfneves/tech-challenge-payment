@@ -27,9 +27,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-security:$springVersion")
 	implementation("org.springframework.session:spring-session-core:$springVersion")
 	implementation("org.springframework.boot:spring-boot-starter-cache:$springVersion")
-//	implementation("org.springframework.cloud:spring-cloud-starter-aws-messaging:2.2.6.RELEASE")
 	implementation ("io.awspring.cloud:spring-cloud-aws-starter:3.1.0")
 	implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs:3.1.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive:$springVersion")
 
 	// Kotlin utils
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
@@ -40,9 +40,6 @@ dependencies {
 	//SQS and SNS
 	implementation("software.amazon.awssdk:sqs:2.22.5")
 	implementation("software.amazon.awssdk:sns:2.22.5")
-
-	// Postgress reactive
-	implementation("io.r2dbc:r2dbc-postgresql:0.8.13.RELEASE")
 
 	// H2
 	implementation("io.r2dbc:r2dbc-h2:1.0.0.RELEASE")

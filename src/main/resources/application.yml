@@ -19,22 +19,15 @@ spring:
   docker:
     compose:
       file: "docker-compose.yml"
+  data:
+    mongodb:
+      uri: mongodb://mongodb:mongodb@localhost:27017/payment
 
 logging:
   level:
     root:
       org.springframework.web: "debug"
       org.hibernate: "debug"
-
-datasource:
-  host: "${POSTGRES_HOST:localhost}"
-  port: "${POSTGRES_PORT:5432}"
-  database: "${POSTGRES_DB:postgresdb}"
-  user: "${POSTGRES_USER:postgres}"
-  password: "${POSTGRES_PASSWORD:postgres}"
-  pool:
-    min-connections: 1
-    max-connections: 30
 
 cloud:
   aws:
