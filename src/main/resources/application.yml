@@ -1,0 +1,58 @@
+server:
+  port: 8098
+  servlet:
+    contextPath: /
+  error:
+    include-message: always
+
+spring-doc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+spring:
+  profiles:
+    active: production
+  main:
+    allow-bean-definition-overriding: true
+  webflux:
+    base-path: /
+  docker:
+    compose:
+      file: "docker-compose.yml"
+
+logging:
+  level:
+    root:
+      org.springframework.web: "debug"
+      org.hibernate: "debug"
+
+datasource:
+  host: "${POSTGRES_HOST:localhost}"
+  port: "${POSTGRES_PORT:5432}"
+  database: "${POSTGRES_DB:postgresdb}"
+  user: "${POSTGRES_USER:postgres}"
+  password: "${POSTGRES_PASSWORD:postgres}"
+  pool:
+    min-connections: 1
+    max-connections: 30
+
+cloud:
+  aws:
+    region:
+      static: us-east-1
+    credentials:
+      instance-profile: true
+    stack:
+      auto: false
+
+order:
+  mp-api:
+    token: "${TOKEN_API"
+    userId: "${USER_ID}"
+    sponsorId: "S{SPONSOR_ID}"
+    url: "https://api.mercadopago.com/"
+    notificationUrl: "${NOTIFICATION_URL}"
+  api-endpoints:
+    qrs: "instore/orders/qr/seller/collectors/?/pos/?/qrs"
+  sns:
+    topicArn: "${TOPIC_ORDER_SNS}"
