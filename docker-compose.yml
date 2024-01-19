@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  order-ws:
+  payment-ws:
     image: payment-ws:latest
     container_name: payment-ws
     build: .
@@ -13,7 +13,7 @@ services:
       - mvp-network
 
   database:
-    image: 'mongo:latest'
+    image: 'mongo:4.4.26-focal'
     container_name: 'mongodb'
     ports:
       - '27017:27017'

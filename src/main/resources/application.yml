@@ -12,16 +12,14 @@ spring-doc:
 spring:
   profiles:
     active: production
+  data:
+    mongodb:
+      uri: "mongodb://mongodb:mongodb@localhost:27017/payment"
   main:
     allow-bean-definition-overriding: true
-  webflux:
-    base-path: /
   docker:
     compose:
       file: "docker-compose.yml"
-  data:
-    mongodb:
-      uri: mongodb://mongodb:mongodb@localhost:27017/payment
 
 logging:
   level:
