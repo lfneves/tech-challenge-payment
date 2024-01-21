@@ -97,3 +97,5 @@ kotlin-ide/
 .kotlin/
 
 .env
+*.env
+docker_compose.env

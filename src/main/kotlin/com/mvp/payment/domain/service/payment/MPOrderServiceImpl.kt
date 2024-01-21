@@ -1,6 +1,7 @@
 package com.mvp.payment.domain.service.payment
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.mvp.payment.domain.configuration.KtorClientConfig
 import com.mvp.payment.domain.configuration.OrderPropertyConfiguration
 import com.mvp.payment.domain.configuration.PaymentURLPropertyConfiguration
 import com.mvp.payment.domain.model.payment.OrderByIdResponseDTO
@@ -8,6 +9,7 @@ import com.mvp.payment.domain.model.payment.enums.PaymentStatusEnum
 import com.mvp.payment.domain.model.payment.store.*
 import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderDTO
 import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderResponseDTO
+import com.mvp.payment.infrastruture.entity.OrderEntity
 import com.mvp.payment.infrastruture.repository.OrderRepository
 import io.ktor.client.*
 import io.ktor.client.call.*
@@ -15,20 +17,25 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class MPOrderServiceImpl(
-    private val httpClient: HttpClient,
+    private val ktorClientConfig: KtorClientConfig,
     private val orderRepository: OrderRepository,
     private val paymentService: PaymentService,
     private val orderPropertyConfiguration: OrderPropertyConfiguration,
     private val paymentURLPropertyConfiguration: PaymentURLPropertyConfiguration
 ): MPOrderService {
+    var logger: Logger = LoggerFactory.getLogger(MPOrderServiceImpl::class.java)
 
-    override suspend fun checkoutOrder(username: String): QrDataDTO {
-        val order = orderRepository.findByUsername(username)
+    private val ktorHttpClient = ktorClientConfig.ktorHttpClient()
+
+    override suspend fun checkoutOrder(externalId: String): QrDataDTO {
+        val order = orderRepository.findByExternalId(externalId)
         val paymentOrder = paymentService.getOrderById(order.id!!)
         val jsonRequest = orderCheckoutGenerateQrs(paymentOrder)
         return generateOrderQrs(jsonRequest)
@@ -39,11 +46,11 @@ class MPOrderServiceImpl(
         val order = paymentService.getOrderByExternalId(UUID.fromString(merchantOrderID.externalReference))
         order?.status = if (merchantOrderID.orderStatus == "payment_required") PaymentStatusEnum.PAYMENT_REQUIRED.value
             else PaymentStatusEnum.PENDING.value
-        orderRepository.updateStatus(order)
+        orderRepository.save(OrderEntity.fromOrderByIdResponseDTO(order!!))
     }
 
     override suspend fun getMerchantOrderByID(requestUrl: String): MerchantOrderResponseDTO {
-        return httpClient.get(requestUrl) {
+        return ktorHttpClient.get(requestUrl) {
             header(HttpHeaders.Authorization, orderPropertyConfiguration.token)
             accept(ContentType.Application.Json)
         }.body()
@@ -53,14 +60,13 @@ class MPOrderServiceImpl(
         val endpoint = paymentURLPropertyConfiguration.qrs.replace("?", orderPropertyConfiguration.userId)
         val requestUrl = orderPropertyConfiguration.url + endpoint
 
-        return withContext(Dispatchers.IO) {
-            httpClient.put(requestUrl) {
-                header(HttpHeaders.Authorization, orderPropertyConfiguration.token)
-                contentType(ContentType.Application.Json)
-                accept(ContentType.Application.Json)
-                setBody(requestBody)
-            }.body()
-        }
+        val response : QrDataDTO = ktorHttpClient.post(requestUrl) {
+            header(HttpHeaders.Authorization, orderPropertyConfiguration.token)
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(requestBody)
+        }.body()
+        return response
     }
 
     override fun orderCheckoutGenerateQrs(order: OrderByIdResponseDTO): String {
@@ -73,6 +79,7 @@ class MPOrderServiceImpl(
         orderQrsDTO.notificationUrl = orderPropertyConfiguration.notificationUrl
         orderQrsDTO.description = order.status
 
+        val totalAmount = order.products.size
         order.products.forEach {
             val product = ItemDTO(
                 category = it.categoryName!!,
@@ -80,7 +87,7 @@ class MPOrderServiceImpl(
                 quantity = 1,
                 sku_number = "${order.idClient}_${order.id}",
                 title = it.productName!!,
-                total_amount = 1,
+                total_amount = totalAmount,
                 unit_measure = "unit",
                 unit_price = it.price.toInt()
             )
@@ -88,11 +95,12 @@ class MPOrderServiceImpl(
         }
         val sponsor = SponsorDTO(id = 57174696)
         orderQrsDTO.totalAmount = products.sumOf { it.total_amount + it.unit_price }
-        val cashOut = CashOutDTO(amount = products.sumOf { it.unit_price })
+        val cashOut = CashOutDTO(amount = 0)
         orderQrsDTO.itemDTOS = products
         orderQrsDTO.sponsorDTO = sponsor
         orderQrsDTO.cashOut = cashOut
 
+        logger.info("orderCheckoutGenerateQrs {}", mapper.writeValueAsString(orderQrsDTO))
         return mapper.writeValueAsString(orderQrsDTO)
     }
 }

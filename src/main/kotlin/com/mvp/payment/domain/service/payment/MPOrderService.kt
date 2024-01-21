@@ -15,5 +15,5 @@ interface MPOrderService {
 
     suspend fun getMerchantOrderByID(requestUrl: String): MerchantOrderResponseDTO
 
-    suspend fun checkoutOrder(username: String): QrDataDTO
+    suspend fun checkoutOrder(externalId: String): QrDataDTO
 }

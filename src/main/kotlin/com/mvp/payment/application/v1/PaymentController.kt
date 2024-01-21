@@ -2,6 +2,7 @@ package com.mvp.payment.application.v1
 
 
 import com.mvp.payment.domain.model.payment.OrderCheckoutDTO
+import com.mvp.payment.domain.model.payment.RequestCheckoutDTO
 import com.mvp.payment.domain.model.payment.store.QrDataDTO
 import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderDTO
 import com.mvp.payment.domain.service.payment.MPOrderService
@@ -25,8 +26,8 @@ class PaymentController(
         tags = ["Pedidos"]
     )
     @ResponseStatus(HttpStatus.ACCEPTED)
-    suspend fun checkoutOrder(username: String): ResponseEntity<QrDataDTO> {
-        return ResponseEntity.ok(mpOrderService.checkoutOrder(username))
+    suspend fun checkoutOrder(@RequestBody requestCheckoutDTO: RequestCheckoutDTO): ResponseEntity<QrDataDTO> {
+        return ResponseEntity.ok(mpOrderService.checkoutOrder(requestCheckoutDTO.externalId))
     }
 
     @PostMapping("/webhook")

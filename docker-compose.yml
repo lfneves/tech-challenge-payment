@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   payment-ws:
@@ -7,22 +7,21 @@ services:
     build: .
     ports:
       - '8098:8098'
+    env_file:
+      - ./docker_compose.env
     depends_on:
-      - database
+      - mongodb
     networks:
       - mvp-network
 
-  database:
-    image: 'mongo:4.4.26-focal'
-    container_name: 'mongodb'
+  mongodb:
+    image: mongo
     ports:
-      - '27017:27017'
+      - "27017:27017"
     environment:
-      TZ: 'America/Sao_Paulo'
-      MONGO_INITDB_ROOT_USERNAME: mongoadmin
-      MONGO_INITDB_ROOT_PASSWORD: secret
-    volumes:
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - MONGO_INITDB_ROOT_USERNAME=mongodb
+      - MONGO_INITDB_ROOT_PASSWORD=mongodb
+      - MONGO_INITDB_DATABASE=paymentdb
     networks:
       - mvp-network
 

@@ -31,7 +31,7 @@ class PaymentServiceImpl(
 
     override suspend fun getOrderByExternalId(externalId: UUID): OrderByIdResponseDTO? {
         logger.info("PaymentServiceImpl - getOrderByExternalId")
-        return orderRepository.findByExternalId(externalId).toResponseDTO()
+        return orderRepository.findByExternalId(externalId.toString()).toResponseDTO()
     }
 
     override fun fakeCheckoutOrder(orderCheckoutDTO: OrderCheckoutDTO): Boolean {

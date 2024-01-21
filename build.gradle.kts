@@ -8,6 +8,8 @@ plugins {
 	kotlin("jvm") version "1.9.21"
 	kotlin("plugin.spring") version "1.9.21"
 	kotlin("plugin.serialization") version "1.9.21"
+	kotlin("plugin.jpa") version "1.9.21"
+	jacoco
 }
 
 group = "com.mvp.payment"
@@ -31,6 +33,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 //	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+	implementation("org.mongodb:mongodb-driver-sync:4.11.1")
 
 	//AWS
 	implementation ("io.awspring.cloud:spring-cloud-aws-starter:3.1.0")
@@ -39,6 +42,7 @@ dependencies {
 	//Ktor
 	implementation("io.ktor:ktor-client-core:$ktorVersion")
 	implementation("io.ktor:ktor-client-apache:$ktorVersion")
+	implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
 	implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 	implementation("io.ktor:ktor-serialization-jackson:$ktorVersion")
@@ -59,9 +63,14 @@ dependencies {
 	// Test dependencies
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("io.projectreactor:reactor-test:3.5.4")
 	testImplementation("io.mockk:mockk:1.13.8")
-//	testImplementation("com.h2database:h2:2.2.224")
+	testImplementation("com.h2database:h2:2.2.224")
+	testImplementation("io.rest-assured:rest-assured:5.4.0")
+	implementation("io.rest-assured:json-schema-validator:5.4.0")
+	testImplementation("io.rest-assured:json-path:5.4.0")
+	testImplementation("io.rest-assured:xml-path:5.4.0")
+	testImplementation("io.rest-assured:spring-mock-mvc:5.4.0")
+	testImplementation("io.rest-assured:kotlin-extensions:5.4.0")
 
 	//Swagger
 	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
@@ -71,6 +80,13 @@ dependencies {
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
+	// Cucumber
+	implementation("io.cucumber:cucumber-spring:7.15.0")
+	implementation("io.cucumber:cucumber-java:7.15.0")
+	implementation("io.cucumber:cucumber-junit:7.15.0")
+
+	testImplementation("org.jacoco:org.jacoco.core:0.8.11")
 }
 
 tasks.withType<KotlinCompile> {
@@ -81,6 +97,56 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.withType<Test> {
-	enabled = false
+	enabled = true
 	useJUnitPlatform()
+	systemProperty("cucumber.junit-platform.naming-strategy", "long")
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.register<Test>("cucumber") {
+	useJUnitPlatform {
+		includeEngines("cucumber")
+	}
+	reports {
+		html.required.set(true)
+		junitXml.required.set(true)
+	}
+	testClassesDirs = sourceSets["test"].output.classesDirs
+	classpath = sourceSets["test"].runtimeClasspath
+	finalizedBy(tasks.jacocoTestReport)
+}
+
+jacoco {
+	toolVersion = "0.8.11"
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
+	val excludes = listOf("**/configuration/*", "**/model/*",
+			"**/utils/*", "**/com/mvp/order/OrderApplication.kt", "**/com/mvp/order/infrastruture/entity/*")
+	classDirectories.setFrom(files(classDirectories.files.map {
+		fileTree(it).apply {
+			exclude(excludes)
+		}
+	}))
+}
+
+tasks.jacocoTestCoverageVerification {
+	violationRules {
+		val excludes = listOf("**/configuration/**", "**/com/mvp/order/domain/model/**",
+				"**/utils/**", "**/com/mvp/order/OrderApplication.kt", "**/com/mvp/order/infrastruture/entity/**")
+		classDirectories.setFrom(files(classDirectories.files.map {
+			fileTree(it).exclude(excludes)
+		}))
+		rule {
+			limit {
+				minimum = BigDecimal.valueOf(0.8)  // 80% coverage
+			}
+		}
+	}
 }

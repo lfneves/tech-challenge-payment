@@ -9,7 +9,7 @@ COPY docker-compose.yml /app/docker-compose.yml
 
 WORKDIR /app
 
-EXPOSE 8099
+EXPOSE 8098
 
 ENTRYPOINT ["java","-jar","app.jar"]
 

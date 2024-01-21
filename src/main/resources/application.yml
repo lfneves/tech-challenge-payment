@@ -14,8 +14,7 @@ spring:
     active: production
   data:
     mongodb:
-      uri: "mongodb://mongodb:mongodb@localhost:27017/payment"
-  main:
+      uri: "mongodb://mongodb:mongodb@localhost:27017/paymentdb?authSource=admin"
     allow-bean-definition-overriding: true
   docker:
     compose:
@@ -38,12 +37,14 @@ cloud:
 
 order:
   mp-api:
-    token: "${TOKEN_API"
-    userId: "${USER_ID}"
-    sponsorId: "S{SPONSOR_ID}"
+    token: "${TOKEN_API:Bearer TEST-29597298295284-083000-fcac7f6198671d6a6b16cdeecc34c787-170225675}"
+    userId: "${USER_ID:170225675}"
+    sponsorId: "S{SPONSOR_ID:57174696}"
     url: "https://api.mercadopago.com/"
-    notificationUrl: "${NOTIFICATION_URL}"
+    notificationUrl: "${NOTIFICATION_URL:https://webhook.site/2f67acbe-9e94-4c7d-8556-7591233a0938}"
   api-endpoints:
     qrs: "instore/orders/qr/seller/collectors/?/pos/?/qrs"
-  sns:
-    topicArn: "${TOPIC_ORDER_SNS}"
+
+aws:
+  region: us-east-1
+  topicArn: "${TOPIC_ORDER_SNS:arn:aws:sns:us-east-1:566907801160:ORDER_TOPIC}"

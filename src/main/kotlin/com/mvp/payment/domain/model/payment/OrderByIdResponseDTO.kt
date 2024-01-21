@@ -8,7 +8,7 @@ import java.util.*
 
 data class OrderByIdResponseDTO(
     var id: Long? = null,
-    var externalId: UUID? = null,
+    var externalId: String = "",
     var idClient: Int? = null,
     var totalPrice: BigDecimal = BigDecimal.ZERO,
     var status: String = "",
