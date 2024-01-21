@@ -98,4 +98,4 @@ kotlin-ide/
 
 .env
 *.env
-docker_compose.env
+!**docker_compose.env
