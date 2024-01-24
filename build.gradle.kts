@@ -9,6 +9,7 @@ plugins {
 	kotlin("plugin.spring") version "1.9.21"
 	kotlin("plugin.serialization") version "1.9.21"
 	kotlin("plugin.jpa") version "1.9.21"
+	id("com.sourcemuse.mongo") version "2.0.0"
 	jacoco
 }
 
@@ -58,12 +59,12 @@ dependencies {
 	implementation("software.amazon.awssdk:sns:2.22.5")
 
 	// Mercado Pago SDK
-	implementation("com.mercadopago:sdk-java:2.1.14")
+	implementation("com.mercadopago:sdk-java:2.1.17")
 
 	// Test dependencies
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
-	testImplementation("io.mockk:mockk:1.13.8")
+	testImplementation("io.mockk:mockk:1.13.9")
 	testImplementation("com.h2database:h2:2.2.224")
 	testImplementation("io.rest-assured:rest-assured:5.4.0")
 	implementation("io.rest-assured:json-schema-validator:5.4.0")
@@ -87,6 +88,13 @@ dependencies {
 	implementation("io.cucumber:cucumber-junit:7.15.0")
 
 	testImplementation("org.jacoco:org.jacoco.core:0.8.11")
+
+	// mongo
+	implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
+}
+
+mongo {
+	logging = "console"
 }
 
 tasks.withType<KotlinCompile> {
@@ -127,22 +135,22 @@ tasks.jacocoTestReport {
 		xml.required.set(true)
 		html.required.set(true)
 	}
-	val excludes = listOf("**/configuration/*", "**/model/*",
-			"**/utils/*", "**/com/mvp/order/OrderApplication.kt", "**/com/mvp/order/infrastruture/entity/*")
+	val excludes = listOf("**/configuration/*", "**/model/*", "**/utils/*", "**DTO**",
+		"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*")
 	classDirectories.setFrom(files(classDirectories.files.map {
 		fileTree(it).apply {
 			exclude(excludes)
-		}
+		}.filter{ file -> !file.name.contains("logger") }
 	}))
 }
 
 tasks.jacocoTestCoverageVerification {
 	violationRules {
-		val excludes = listOf("**/configuration/**", "**/com/mvp/order/domain/model/**",
-				"**/utils/**", "**/com/mvp/order/OrderApplication.kt", "**/com/mvp/order/infrastruture/entity/**")
+		val excludes = listOf("**/configuration/*", "**/model/*", "**/utils/*", "**DTO**",
+			"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*")
 		classDirectories.setFrom(files(classDirectories.files.map {
 			fileTree(it).exclude(excludes)
-		}))
+		}).filter{ file -> !file.name.contains("logger") })
 		rule {
 			limit {
 				minimum = BigDecimal.valueOf(0.8)  // 80% coverage

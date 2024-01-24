@@ -1,6 +1,5 @@
 package com.mvp.payment.domain.model.payment
 
-data class OrderFinishDTO(
-    var isFinished: Boolean = false,
+data class OrderCheckoutDTO(
     val externalId: String = ""
 )

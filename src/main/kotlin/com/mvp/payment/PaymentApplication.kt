@@ -1,11 +1,10 @@
 package com.mvp.payment
 
-import com.mvp.payment.infrastruture.entity.OrderEntity
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 
-@SpringBootApplication
+@SpringBootApplication(excludeName = ["de.flapdoodle.embed.mongo.spring.autoconfigure.EmbeddedMongoAutoConfiguration"])
 @EnableMongoRepositories(basePackages = ["com.mvp.payment.infrastruture.repository"])
 class PaymentApplication
 

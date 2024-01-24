@@ -11,7 +11,7 @@ spring-doc:
 
 spring:
   profiles:
-    active: production
+    profile: production
   data:
     mongodb:
       uri: "mongodb://mongodb:mongodb@localhost:27017/paymentdb?authSource=admin"
@@ -48,3 +48,4 @@ order:
 aws:
   region: us-east-1
   topicArn: "${TOPIC_ORDER_SNS:arn:aws:sns:us-east-1:566907801160:ORDER_TOPIC}"
+  statusQueue: "${STATUS_QUEUE=https://sqs.us-east-1.amazonaws.com/566907801160/STATUS_QUEUE}"

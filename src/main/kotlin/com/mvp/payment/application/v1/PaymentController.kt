@@ -1,7 +1,9 @@
 package com.mvp.payment.application.v1
 
 
+import com.mvp.payment.domain.model.payment.OrderByIdResponseDTO
 import com.mvp.payment.domain.model.payment.OrderCheckoutDTO
+import com.mvp.payment.domain.model.payment.OrderFinishDTO
 import com.mvp.payment.domain.model.payment.RequestCheckoutDTO
 import com.mvp.payment.domain.model.payment.store.QrDataDTO
 import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderDTO
@@ -48,7 +50,18 @@ class PaymentController(
         tags = ["Pedidos"]
     )
     @ResponseStatus(HttpStatus.ACCEPTED)
-    fun checkoutOrder(@RequestBody orderCheckoutDTO: OrderCheckoutDTO): ResponseEntity<Boolean> {
+    fun checkoutOrder(@RequestBody orderCheckoutDTO: OrderCheckoutDTO): ResponseEntity<OrderByIdResponseDTO> {
         return ResponseEntity.ok(paymentService.fakeCheckoutOrder(orderCheckoutDTO))
+    }
+
+    @PostMapping("/fake-finish-payment")
+    @Operation(
+        summary = "Efetua o pagamento atualizando os status",
+        description = "Efetua o pagamento atualizando os status",
+        tags = ["Pedidos"]
+    )
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    fun finishedOrderWithPayment(@RequestBody orderCheckoutDTO: OrderCheckoutDTO): ResponseEntity<OrderFinishDTO> {
+        return ResponseEntity.ok(paymentService.finishedOrderWithPayment(orderCheckoutDTO))
     }
 }

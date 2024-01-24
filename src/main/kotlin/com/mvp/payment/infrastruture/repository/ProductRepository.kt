@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository
 
 
 @Repository
-interface ProductRepository : MongoRepository<Product, String>
+interface ProductRepository : MongoRepository<Product, String> {
+
+    fun findByExternalId(externalId: String): List<Product>
+}
