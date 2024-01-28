@@ -113,6 +113,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          STATUS_QUEUE: ${{env.STATUS_QUEUE}}
+          TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
         run: ./gradlew clean bootjar test jacocoTestReport sonar
 
 #  ecr:
