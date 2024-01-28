@@ -1,26 +1,30 @@
 package com.mvp.payment.application.integration
 
 import com.mvp.payment.application.v1.PaymentController
+import com.mvp.payment.domain.configuration.AwsConfig
 import com.mvp.payment.domain.model.payment.RequestCheckoutDTO
 import com.mvp.payment.domain.model.payment.store.QrDataDTO
 import com.mvp.payment.domain.service.payment.MPOrderService
 import com.mvp.payment.domain.service.payment.PaymentServiceImpl
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import io.restassured.http.ContentType
 import io.restassured.module.mockmvc.RestAssuredMockMvc
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import software.amazon.awssdk.services.sns.SnsClient
+import software.amazon.awssdk.services.sqs.SqsClient
 
 
 //@ActiveProfiles("test")
@@ -165,12 +169,13 @@ class PaymentControllerTest {
 
     private lateinit var paymentController: PaymentController
 
-    @Value("\${TOPIC_ORDER_SNS:default_value}")
-    private val TOPIC_ORDER_SNS: String? = null
-    @Value("\${PAYMENT_QUEUE:default_value}")
-    private val PAYMENT_QUEUE: String? = null
-    @Value("\${STATUS_QUEUE:default_value}")
-    private val STATUS_QUEUE: String? = null
+    private val awsConfig = mockk<AwsConfig>(relaxed = true)
+    private val snsClient= mockk<SnsClient>(relaxed = true)
+    private val sqsClient= mockk<SqsClient>(relaxed = true)
+
+    private val TOPIC_ORDER_SNS = System.getenv("TOPIC_ORDER_SNS") ?: "arn:aws:sns:us-east-1:111111111111:ORDER_TOPIC"
+    private val PAYMENT_QUEUE = System.getenv("TOPIC_ORDER_SNS") ?: "https://sqs.us-east-1.amazonaws.com/566907801160/PAYMENT_QUEUE"
+    private val STATUS_QUEUE = System.getenv("TOPIC_ORDER_SNS") ?: "https://sqs.us-east-1.amazonaws.com/566907801160/STATUS_QUEUE\n"
 
     @BeforeEach
     fun setup() {
@@ -187,6 +192,14 @@ class PaymentControllerTest {
             qrData = "00020101021243650016COM.MERCADOLIBRE0201306367fc3e0bd-b454-474e-8840-" +
                     "ea67c934bb965204000053039865802BR5908delivery6009SAO PAULO62070503***63049061"
         )
+
+        every { awsConfig.topicArn } returns TOPIC_ORDER_SNS
+        every { awsConfig.region } returns "us-east-1"
+        every { awsConfig.statusQueue } returns STATUS_QUEUE
+
+        every { awsConfig.sqsClient() } returns sqsClient
+        every { awsConfig.snsClient() } returns snsClient
+
         coEvery { mpOrderService.checkoutOrder(any()) } returns qrDataDTO
 
         // Testing
