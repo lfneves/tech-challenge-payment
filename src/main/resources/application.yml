@@ -14,7 +14,7 @@ spring:
     active: production
   data:
     mongodb:
-      uri: ${SPRING_DATA_MONGODB_URI}
+      uri: "${SPRING_DATA_MONGODB_URI}"
     allow-bean-definition-overriding: true
   docker:
     compose:
