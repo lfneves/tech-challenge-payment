@@ -11,17 +11,13 @@ import io.mockk.mockk
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import java.math.BigDecimal
 
-@SpringBootTest
 @ActiveProfiles("test")
 class ListenerPaymentServiceTest {
 
-    @Autowired private lateinit var orderRepository: OrderRepository
-    @Autowired private lateinit var listenerPaymentService: ListenerPaymentService
+    private val listenerPaymentService: ListenerPaymentService = mockk(relaxed = true)
 
     private val orderRepositoryMockk = mockk<OrderRepository>(relaxed = true)
 
