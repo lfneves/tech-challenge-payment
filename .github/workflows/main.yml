@@ -74,6 +74,10 @@ jobs:
     name: Sonar Trigger
 #    needs: [build,test]
     runs-on: ubuntu-latest
+    env:
+      STATUS_QUEUE: ${{env.STATUS_QUEUE}}
+      TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
+      PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
     services:
       mongodb:
         image: mongo
