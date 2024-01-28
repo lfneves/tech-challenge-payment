@@ -14,7 +14,7 @@ spring:
     active: production
   data:
     mongodb:
-      uri: "${SPRING_DATA_MONGODB_URI:mongodb://mongodb:mongodb@mongodb:27017/paymentdb?authSource=admin}"
+      uri: "${SPRING_DATA_MONGODB_URI:mongodb://mongodb:mongodb@localhost:27017/paymentdb?authSource=admin}"
     allow-bean-definition-overriding: true
   docker:
     compose:
