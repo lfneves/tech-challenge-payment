@@ -25,7 +25,7 @@ sonar {
 		property("sonar.exclusions", "**/com/mvp/payment/PaymentApplication.kt")
 		property("sonar.exclusions", "**/com/mvp/payment/infrastruture/entity/*")
 		property("sonar.exclusions", "**src/test/kotlin/com/mvp/payment/*")
-		property("sonar.jacoco.reportPaths", "$rootDir/build/reports/jacoco/jacocoFullReport/jacocoFullReport.xml")
+		property("sonar.jacoco.reportPaths", "**/reports/jacoco/jacocoFullReport/jacocoFullReport.xml")
 	}
 }
 
