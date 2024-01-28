@@ -243,4 +243,30 @@ class PaymentServiceImplTest {
 
         assertEquals(expectedTotalAmount, resultObject.totalAmount)
     }
+
+    @Test
+    fun `test getOrderById with present orderEntity`() {
+        val orderRepository: OrderRepository = mockk(relaxed = true)
+        val paymentService: PaymentService = mockk(relaxed = true)
+        val id = 123L
+        val expectedResponse = fromOrderEntityToOrderByIdResponseDTO(orderEntity)
+
+        every { orderRepository.findById(id) } returns Optional.of(orderEntity)
+        every { paymentService.getOrderById(id) } returns fromOrderEntityToOrderByIdResponseDTO(orderEntity)
+
+        val result = paymentService.getOrderById(id)
+
+        assertEquals(expectedResponse.externalId, result.externalId)
+    }
+
+    @Test
+    fun `test getOrderById with absent orderEntity`() {
+        val orderRepository: OrderRepository = mockk(relaxed = true)
+        val id = 123L
+        every { orderRepository.findById(id) } returns Optional.empty()
+
+        val result = paymentService.getOrderById(id)
+
+        assertEquals(OrderByIdResponseDTO().externalId, result.externalId)
+    }
 }
