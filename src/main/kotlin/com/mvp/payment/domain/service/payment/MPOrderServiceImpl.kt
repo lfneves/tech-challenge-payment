@@ -56,7 +56,7 @@ class MPOrderServiceImpl(
         orderRepository.save(OrderEntity.fromOrderByIdResponseDTO(order!!))
     }
 
-    private suspend fun getMerchantOrderByID(requestUrl: String): MerchantOrderResponseDTO {
+    suspend fun getMerchantOrderByID(requestUrl: String): MerchantOrderResponseDTO {
         return ktorHttpClient.get(requestUrl) {
             header(HttpHeaders.Authorization, orderPropertyConfiguration.token)
             accept(ContentType.Application.Json)

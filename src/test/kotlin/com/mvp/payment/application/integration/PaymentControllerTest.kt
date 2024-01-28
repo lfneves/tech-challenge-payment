@@ -4,7 +4,10 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.mvp.payment.domain.model.payment.OrderByIdResponseDTO
 import com.mvp.payment.domain.model.payment.OrderCheckoutDTO
 import com.mvp.payment.domain.model.payment.RequestCheckoutDTO
+import com.mvp.payment.domain.model.payment.enums.PaymentStatusEnum
 import com.mvp.payment.domain.model.payment.store.QrDataDTO
+import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderDTO
+import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderResponseDTO
 import com.mvp.payment.domain.service.message.SnsAndSqsService
 import com.mvp.payment.domain.service.payment.MPOrderServiceImpl
 import com.mvp.payment.domain.service.payment.PaymentService
@@ -14,6 +17,8 @@ import io.mockk.*
 import io.restassured.RestAssured
 import io.restassured.RestAssured.given
 import io.restassured.http.ContentType
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -25,6 +30,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import java.math.BigDecimal
+import java.util.*
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -136,4 +142,20 @@ class PaymentControllerTest {
             .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
             //.body("externalId", equalTo("4879d212-bdf1-413c-9fd1-5b65b50257bc"))
     }
+
+    @Test
+    fun `test saveCheckoutOrderExternalStoreID with payment required status`() = runBlocking {
+        val merchantOrderDTO = MerchantOrderDTO(resource = "1", topic = "A")
+        val order = OrderByIdResponseDTO(status = PaymentStatusEnum.PAYMENT_REQUIRED.value)
+
+        var mpOrderService: MPOrderServiceImpl = mockk(relaxed = true)
+
+        coEvery { mpOrderService.getMerchantOrderByID(merchantOrderDTO.resource) } returns MerchantOrderResponseDTO()
+        coEvery { paymentService.getOrderByExternalId(UUID.fromString(orderEntity.externalId)) } returns order
+
+        mpOrderService.saveCheckoutOrderExternalStoreID(merchantOrderDTO)
+
+        assertEquals(PaymentStatusEnum.PAYMENT_REQUIRED.value, order.status)
+    }
+
 }
