@@ -11,6 +11,22 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.21"
 	id("com.sourcemuse.mongo") version "2.0.0"
 	jacoco
+	id("org.sonarqube") version "4.4.1.3373"
+}
+
+sonar {
+	properties {
+		property("sonar.projectKey", "lfneves_tech-challenge-payment")
+		property("sonar.organization", "lfneves")
+		property("sonar.host.url", "https://sonarcloud.io")
+		property("sonar.exclusions", "**/configuration/*")
+		property("sonar.exclusions", "**/model/*")
+		property("sonar.exclusions", "**/utils/*")
+		property("sonar.exclusions", "**/com/mvp/payment/PaymentApplication.kt")
+		property("sonar.exclusions", "**/com/mvp/payment/infrastruture/entity/*")
+		property("sonar.exclusions", "**src/test/kotlin/com/mvp/payment/*")
+		property("sonar.jacoco.reportPaths", "$rootDir/build/reports/jacoco/jacocoFullReport/jacocoFullReport.xml")
+	}
 }
 
 group = "com.mvp.payment"
