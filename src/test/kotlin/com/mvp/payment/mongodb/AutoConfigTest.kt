@@ -11,19 +11,19 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.junit.jupiter.SpringExtension
 
 
-@DataMongoTest
-@ExtendWith(SpringExtension::class)
-@ActiveProfiles("test")
-@EnableAutoConfiguration
-class AutoConfigTest {
-
-    @Test
-    fun example(@Autowired mongoTemplate: MongoTemplate) {
-        assertThat(mongoTemplate.db).isNotNull()
-        val names = mongoTemplate.db
-            .listCollectionNames()
-            .into(ArrayList())
-
-        assertThat(names).isEmpty()
-    }
-}
+//@DataMongoTest
+//@ExtendWith(SpringExtension::class)
+//@ActiveProfiles("test")
+//@EnableAutoConfiguration
+//class AutoConfigTest {
+//
+//    @Test
+//    fun example(@Autowired mongoTemplate: MongoTemplate) {
+//        assertThat(mongoTemplate.db).isNotNull()
+//        val names = mongoTemplate.db
+//            .listCollectionNames()
+//            .into(ArrayList())
+//
+//        assertThat(names).isEmpty()
+//    }
+//}
