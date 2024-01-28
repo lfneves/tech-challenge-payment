@@ -76,7 +76,7 @@ class MPOrderServiceImpl(
         return response
     }
 
-    private fun orderCheckoutGenerateQrs(order: OrderDTO): String {
+    fun orderCheckoutGenerateQrs(order: OrderDTO): String {
         val mapper = jacksonObjectMapper()
         val products = mutableListOf<ItemDTO>()
         val orderQrsDTO = OrderQrsDTO()
@@ -88,14 +88,14 @@ class MPOrderServiceImpl(
 
         order.productList.forEach {
             val product = ItemDTO(
-                category = "",//it.categoryName!!,
+                category = "",
                 description = "Test",
                 quantity = 1,
                 sku_number = "${order.idClient}_${order.id}",
-                title = "",//it.productName!!,
+                title = "",
                 total_amount = 1,
                 unit_measure = "unit",
-                unit_price = 1//it.price.toInt()
+                unit_price = 1
             )
             products.add(product)
         }

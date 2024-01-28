@@ -1,11 +1,17 @@
 package com.mvp.payment.application.unit
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.mvp.payment.domain.model.exception.Exceptions
 import com.mvp.payment.domain.model.payment.OrderByIdResponseDTO
 import com.mvp.payment.domain.model.payment.OrderByIdResponseDTO.Companion.fromOrderEntityToOrderByIdResponseDTO
 import com.mvp.payment.domain.model.payment.OrderCheckoutDTO
 import com.mvp.payment.domain.model.payment.enums.PaymentStatusEnum
+import com.mvp.payment.domain.model.payment.listener.OrderDTO
+import com.mvp.payment.domain.model.payment.listener.Product
+import com.mvp.payment.domain.model.payment.store.OrderQrsDTO
+import com.mvp.payment.domain.model.payment.store.QrDataDTO
 import com.mvp.payment.domain.service.message.SnsAndSqsService
+import com.mvp.payment.domain.service.payment.MPOrderServiceImpl
 import com.mvp.payment.domain.service.payment.PaymentService
 import com.mvp.payment.domain.service.payment.PaymentServiceImpl
 import com.mvp.payment.infrastruture.entity.OrderEntity
@@ -34,9 +40,14 @@ class PaymentServiceImplTest {
     @Autowired
     private lateinit var productRepository: ProductRepository
 
+    @Autowired
+    private lateinit var mpOrderServiceImpl: MPOrderServiceImpl
+
     private val snsAndSqsService: SnsAndSqsService = mockk<SnsAndSqsService>()
 
     private lateinit var orderEntity: OrderEntity
+
+    private val externalId = "4879d212-bdf1-413c-9fd1-5b65b50257bc"
 
     @BeforeEach
     fun setUp() {
@@ -186,5 +197,50 @@ class PaymentServiceImplTest {
         assertThrows<Exception> {
             paymentService.finishedOrderWithPayment(orderCheckoutDTO)
         }
+    }
+
+    @Test
+    fun `test checkoutOrder with present orderEntity`() = runBlocking{
+        val orderRepository = mockk<OrderRepository>()
+        val productRepository = mockk<ProductRepository>()
+        val mpOrderServiceImpl = mockk<MPOrderServiceImpl>()
+
+        val orderEntity = Optional.of(orderEntity)
+        val products = listOf(Product(externalId = externalId))
+        val expectedQrDataDTO = QrDataDTO()
+
+        every { orderRepository.findByExternalId(any()) } returns orderEntity
+        every { productRepository.findByExternalId(externalId) } returns products
+        coEvery { mpOrderServiceImpl.generateOrderQrs(any()) } returns expectedQrDataDTO
+        coEvery { mpOrderServiceImpl.checkoutOrder(externalId) } returns QrDataDTO()
+
+        val result = mpOrderServiceImpl.checkoutOrder(externalId)
+
+        assertEquals(expectedQrDataDTO, result)
+    }
+
+    @Test
+    fun `test checkoutOrder with absent orderEntity`(): Unit = runBlocking{
+        val orderRepository = mockk<OrderRepository>()
+
+        val externalId = "some-external-id"
+        val orderEntity = Optional.empty<OrderEntity>()
+
+        every { orderRepository.findByExternalId(externalId) } returns orderEntity
+
+        assertThrows<Exceptions.RequestedElementNotFoundException> {
+            mpOrderServiceImpl.checkoutOrder(externalId)
+        }
+    }
+
+    @Test
+    fun `test orderCheckoutGenerateQrs totalAmount calculation`() {
+        val orderDTO = OrderDTO(externalId = externalId, totalPrice = BigDecimal.ONE)
+
+        val expectedTotalAmount = 0
+        val resultJson = mpOrderServiceImpl.orderCheckoutGenerateQrs(orderDTO)
+        val resultObject = jacksonObjectMapper().readValue(resultJson, OrderQrsDTO::class.java)
+
+        assertEquals(expectedTotalAmount, resultObject.totalAmount)
     }
 }
