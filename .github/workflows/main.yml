@@ -20,7 +20,9 @@ env:
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
   KUBE_NAMESPACE: delivery-cluster
   RELEASE_REVISION: "pr-${{ github.event.pull_request.number }}-${{ github.event.pull_request.head.sha }}"
-  TOPIC_ORDER_SNS: ${{ secrets.TOPIC_ORDER_SNS }}
+  STATUS_QUEUE: ${{env.STATUS_QUEUE}}
+  TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
+  PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
 
 jobs:
 #  build:
