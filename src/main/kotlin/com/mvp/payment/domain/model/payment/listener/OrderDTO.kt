@@ -36,7 +36,7 @@ data class OrderDTO(
                                 idClient = orderEntity.idClient!!,
                                 totalPrice = orderEntity.totalPrice,
                                 status = orderEntity.status,
-                                waitingTimeRaw = Utils.convertLocalDateTimeToList(orderEntity.waitingTime),
+                                waitingTimeRaw = Utils.convertLocalDateTimeToList(orderEntity.waitingTime!!),
                                 isFinished = orderEntity.isFinished,
                         )
                 }

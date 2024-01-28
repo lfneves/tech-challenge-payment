@@ -27,7 +27,7 @@ data class OrderEntity(
     @Field("updateStatus")
     var updateStatus: String = "",
     @Field("waiting_time")
-    var waitingTime: LocalDateTime = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime(),
+    var waitingTime: LocalDateTime? = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime(),
     @Field("is_finished")
     var isFinished: Boolean = false,
     val className: String = "com.mvp.payment.infrastructure.entity.OrderEntity"

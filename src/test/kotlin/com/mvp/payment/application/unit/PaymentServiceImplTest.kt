@@ -142,9 +142,12 @@ class PaymentServiceImplTest {
 
     @Test
     fun `test fakeCheckoutOrder with valid data`() {
-        orderRepository.save(orderEntity)
+        val orderResponse = orderRepository.save(orderEntity)
+        orderResponse.waitingTime = null
 
         val orderCheckoutDTO = OrderCheckoutDTO(externalId = orderEntity.externalId)
+
+        every { snsAndSqsService.sendQueueStatusMessage(any()) }just runs
 
         val result = paymentService.fakeCheckoutOrder(orderCheckoutDTO)
 

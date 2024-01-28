@@ -36,7 +36,7 @@ data class OrderByIdResponseDTO(
                 idClient = orderEntity.idClient,
                 totalPrice = orderEntity.totalPrice,
                 status = orderEntity.status,
-                waitingTime = orderEntity.waitingTime,
+                waitingTime = orderEntity.waitingTime!!,
                 isFinished = orderEntity.isFinished
             )
         }
