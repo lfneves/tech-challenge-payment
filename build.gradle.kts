@@ -74,8 +74,7 @@ dependencies {
 	testImplementation("io.rest-assured:kotlin-extensions:5.4.0")
 
 	//Swagger
-	implementation("org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0")
-	implementation("org.springdoc:springdoc-openapi-starter-webflux-api:2.1.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 
 	// JWT
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")

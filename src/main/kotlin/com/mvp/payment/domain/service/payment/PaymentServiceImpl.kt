@@ -63,6 +63,7 @@ class PaymentServiceImpl(
                 )
                 val orderResponse = OrderByIdResponseDTO.fromOrderEntityToOrderByIdResponseDTO(orderRepository.save(updatedOrder))
                 orderResponse.products = productRepository.findByExternalId(orderResponse.externalId).toMutableList()
+                snsAndSqsService.sendQueueStatusMessage(mapper.writeValueAsString(orderResponse.toStatusDTO()))
                 return orderResponse
             }
         } catch (e: Exception) {

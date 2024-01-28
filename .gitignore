@@ -96,6 +96,6 @@ outTmp/
 kotlin-ide/
 .kotlin/
 
-.env
+env.sh
 *.env
 docker_compose.env

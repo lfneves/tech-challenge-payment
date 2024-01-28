@@ -1,7 +1,7 @@
 server:
   port: 8098
   servlet:
-    contextPath: /
+    contextPath: "/"
   error:
     include-message: always
 
@@ -11,10 +11,10 @@ spring-doc:
 
 spring:
   profiles:
-    profile: production
+    active: production
   data:
     mongodb:
-      uri: "mongodb://mongodb:mongodb@localhost:27017/paymentdb?authSource=admin"
+      uri: ${SPRING_DATA_MONGODB_URI}
     allow-bean-definition-overriding: true
   docker:
     compose:
@@ -37,15 +37,15 @@ cloud:
 
 order:
   mp-api:
-    token: "${TOKEN_API:Bearer TEST-29597298295284-083000-fcac7f6198671d6a6b16cdeecc34c787-170225675}"
-    userId: "${USER_ID:170225675}"
-    sponsorId: "S{SPONSOR_ID:57174696}"
+    token: "${TOKEN_API}"
+    userId: "${USER_ID}"
+    sponsorId: "S{SPONSOR_ID}"
     url: "https://api.mercadopago.com/"
-    notificationUrl: "${NOTIFICATION_URL:https://webhook.site/2f67acbe-9e94-4c7d-8556-7591233a0938}"
+    notificationUrl: "${NOTIFICATION_URL}"
   api-endpoints:
     qrs: "instore/orders/qr/seller/collectors/?/pos/?/qrs"
 
 aws:
   region: us-east-1
-  topicArn: "${TOPIC_ORDER_SNS:arn:aws:sns:us-east-1:566907801160:ORDER_TOPIC}"
-  statusQueue: "${STATUS_QUEUE=https://sqs.us-east-1.amazonaws.com/566907801160/STATUS_QUEUE}"
+  topicArn: "${TOPIC_ORDER_SNS:arn:aws:sns:us-east-1:1111111:ORDER_TOPIC}"
+  statusQueue: "${STATUS_QUEUE:https://sqs.us-east-1.amazonaws.com/1111111/STATUS_QUEUE}"
