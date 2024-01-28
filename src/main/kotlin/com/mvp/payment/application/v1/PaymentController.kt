@@ -8,7 +8,7 @@ import com.mvp.payment.domain.model.payment.RequestCheckoutDTO
 import com.mvp.payment.domain.model.payment.store.QrDataDTO
 import com.mvp.payment.domain.model.payment.store.webhook.MerchantOrderDTO
 import com.mvp.payment.domain.service.payment.MPOrderService
-import com.mvp.payment.domain.service.payment.PaymentService
+import com.mvp.payment.domain.service.payment.PaymentServiceImpl
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/api/v1/payment")
 class PaymentController(
-    private val paymentService: PaymentService,
+    private val paymentService: PaymentServiceImpl,
     private val mpOrderService: MPOrderService
 ) {
 
