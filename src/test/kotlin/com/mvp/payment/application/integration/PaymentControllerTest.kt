@@ -15,6 +15,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpStatus
@@ -163,6 +164,13 @@ class PaymentControllerTest {
     private lateinit var mockMvc: MockMvc
 
     private lateinit var paymentController: PaymentController
+
+    @Value("\${TOPIC_ORDER_SNS:default_value}")
+    private val TOPIC_ORDER_SNS: String? = null
+    @Value("\${PAYMENT_QUEUE:default_value}")
+    private val PAYMENT_QUEUE: String? = null
+    @Value("\${STATUS_QUEUE:default_value}")
+    private val STATUS_QUEUE: String? = null
 
     @BeforeEach
     fun setup() {
