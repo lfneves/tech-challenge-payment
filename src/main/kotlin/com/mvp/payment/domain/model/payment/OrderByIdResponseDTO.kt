@@ -14,7 +14,7 @@ data class OrderByIdResponseDTO(
     var idClient: Int? = null,
     var totalPrice: BigDecimal = BigDecimal.ZERO,
     var status: String = "",
-    var waitingTime: LocalDateTime = ZonedDateTime.now(ZoneId.of( "America/Sao_Paulo")).toLocalDateTime(),
+    var waitingTime: LocalDateTime? = ZonedDateTime.now(ZoneId.of( "America/Sao_Paulo")).toLocalDateTime(),
     var isFinished: Boolean = false,
     var products: MutableList<Product> = mutableListOf()
 ) {
@@ -36,7 +36,7 @@ data class OrderByIdResponseDTO(
                 idClient = orderEntity.idClient,
                 totalPrice = orderEntity.totalPrice,
                 status = orderEntity.status,
-                waitingTime = orderEntity.waitingTime!!,
+                waitingTime = orderEntity.waitingTime,
                 isFinished = orderEntity.isFinished
             )
         }

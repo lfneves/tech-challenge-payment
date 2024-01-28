@@ -61,7 +61,8 @@ class PaymentServiceImpl(
                     status = PaymentStatusEnum.PAYMENT_REQUIRED.value,
                     waitingTime = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusMinutes(randomMinutes).toLocalDateTime()
                 )
-                val orderResponse = OrderByIdResponseDTO.fromOrderEntityToOrderByIdResponseDTO(orderRepository.save(updatedOrder))
+                val savedOrder = orderRepository.save(updatedOrder)
+                val orderResponse = OrderByIdResponseDTO.fromOrderEntityToOrderByIdResponseDTO(savedOrder)
                 orderResponse.products = productRepository.findByExternalId(orderResponse.externalId).toMutableList()
                 snsAndSqsService.sendQueueStatusMessage(mapper.writeValueAsString(orderResponse.toStatusDTO()))
                 return orderResponse
@@ -84,7 +85,8 @@ class PaymentServiceImpl(
                     waitingTime = ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toLocalDateTime(),
                     isFinished = true
                 )
-                val orderResponse =  OrderByIdResponseDTO.fromOrderEntityToOrderByIdResponseDTO(orderRepository.save(updatedOrder))
+                val savedOrder = orderRepository.save(updatedOrder)
+                val orderResponse =  OrderByIdResponseDTO.fromOrderEntityToOrderByIdResponseDTO(savedOrder)
                 val statusDTO: StatusDTO = orderResponse.toStatusDTO()
                 snsAndSqsService.sendQueueStatusMessage(mapper.writeValueAsString(statusDTO))
                 return OrderFinishDTO(

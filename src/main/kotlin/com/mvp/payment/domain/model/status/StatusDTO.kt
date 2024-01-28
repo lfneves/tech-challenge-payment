@@ -10,6 +10,6 @@ data class StatusDTO(
     var idClient: Int? = null,
     var totalPrice: BigDecimal = BigDecimal.ZERO,
     var status: String = "",
-    var waitingTime: LocalDateTime = ZonedDateTime.now(ZoneId.of( "America/Sao_Paulo")).toLocalDateTime(),
+    var waitingTime: LocalDateTime? = ZonedDateTime.now(ZoneId.of( "America/Sao_Paulo")).toLocalDateTime(),
     var isFinished: Boolean = false
 )
