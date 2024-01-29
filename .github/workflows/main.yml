@@ -2,19 +2,19 @@ name: Tech challenge payment-ws
 
 on:
   workflow_dispatch:
-  # push:
-    # branches:
-      # - main
-  # pull_request:
-    # branches:
-      # - main
+   push:
+     branches:
+       - main
+   pull_request:
+     branches:
+       - main
 
 permissions:
   contents: read
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: order-ws
+  ECR_REPOSITORY: payment-ws
   SHORT_SHA: ${{ github.sha }}
   IMAGE_NAME: lfneves
   KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
@@ -122,51 +122,51 @@ jobs:
           STATUS_QUEUE: ${{env.STATUS_QUEUE}}
           TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
           PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
-        run: ./gradlew clean bootjar test jacocoTestReport sonar --debug
+        run: ./gradlew clean bootjar test jacocoTestReport sonar
 
-#  ecr:
-#    needs: sonarcloud
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: checkout
-#        uses: actions/checkout@v4
-#
-#      - name: Download jar file
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: jar-file
-#          path: .
-#
-#      - name: Configure AWS credentials
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ env.AWS_REGION }}
-#
-#      - name: Login to Amazon ECR
-#        id: login-ecr
-#        uses: aws-actions/amazon-ecr-login@v1
-#
-#      - name: Build image to Amazon ECR
-#        id: build-image
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#          IMAGE_TAG: latest
-#        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
-#        working-directory: ${{ github.workspace }}
-#
-#      - name: Tag image to Amazon ECR
-#        id: tag-image
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/order-ws:latest
-#        working-directory: ${{ github.workspace }}
-#
-#      - name: Push image to Amazon ECR
-#        id: push-image
-#        env:
-#          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-#        run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
-#        working-directory: ${{ github.workspace }}
+  ecr:
+    needs: sonarcloud
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Download jar file
+        uses: actions/download-artifact@v2
+        with:
+          name: jar-file
+          path: .
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
+        run: docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest .
+        working-directory: ${{ github.workspace }}
+
+      - name: Tag image to Amazon ECR
+        id: tag-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest ${{ env.ECR_REGISTRY }}/payment-ws:latest
+        working-directory: ${{ github.workspace }}
+
+      - name: Push image to Amazon ECR
+        id: push-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+        working-directory: ${{ github.workspace }}
