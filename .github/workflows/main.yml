@@ -122,7 +122,7 @@ jobs:
           STATUS_QUEUE: ${{env.STATUS_QUEUE}}
           TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
           PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
-        run: ./gradlew clean bootjar test jacocoTestReport sonar --stacktrace
+        run: ./gradlew clean bootjar test jacocoTestReport sonar --debug
 
 #  ecr:
 #    needs: sonarcloud
