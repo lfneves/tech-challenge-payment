@@ -128,7 +128,7 @@ jobs:
         run: ./gradlew clean test
 
   ecr:
-    needs: sonarcloud
+    needs: [test]
     runs-on: ubuntu-latest
 
     steps:
@@ -173,3 +173,23 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
         working-directory: ${{ github.workspace }}
+
+  deploy-to-ecs:
+    name: Deploy to AWS ECS
+    needs: ecr
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service --cluster delivery-cluster --service payment-ws --force-new-deployment
