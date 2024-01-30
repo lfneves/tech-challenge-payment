@@ -39,10 +39,9 @@ Check versions:
 This is an example of how to use the software and how to install it.
 
 ### Build artifact project first
-``sh
+```sh
 ./gradlew clean bootjar
-
-``
+```
 
 ### Docker
 
