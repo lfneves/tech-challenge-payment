@@ -14,7 +14,7 @@
 ```sh
 # Get the latest version
 
-git clone https://github.com/lfneves/tech-challenge-order
+https://github.com/lfneves/tech-challenge-payment.git
 ```
 ---
 
