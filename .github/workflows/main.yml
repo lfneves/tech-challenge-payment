@@ -57,7 +57,7 @@ jobs:
           path: app.jar
   
   sonarcloud:
-    name: Sonar Analyse
+    name: Sonar Analyze
     needs: [build]
     runs-on: ubuntu-latest
     env:
