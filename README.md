@@ -6,7 +6,7 @@
 - Gradle 7.6.1 or later - [Gradle build tool Installation](https://gradle.org/install/)
 - Docker 24.0.2 or later - [How to install Docker](https://docs.docker.com/engine/install/)
 - Docker Compose 1.29.2 or later - [Reference guide](https://docs.docker.com/compose/install/)
-- The project runs on port 8099 (http://localhost:8098).
+- The project runs on port 8098 (http://localhost:8098).
 
 <!-- GETTING STARTED -->
 ## Getting Started
