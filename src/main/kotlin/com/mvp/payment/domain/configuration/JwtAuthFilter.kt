@@ -1,9 +1,8 @@
 package com.mvp.payment.domain.configuration
 
-//import com.mvp.order.domain.service.user.UserDetailsServiceImpl
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.mvp.order.domain.model.auth.ApiErrorResponse
 import com.mvp.payment.domain.configuration.jwt.JWTUtils
+import com.mvp.payment.domain.model.auth.ApiErrorResponse
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletException
 import jakarta.servlet.http.HttpServletRequest
@@ -17,7 +16,6 @@ import java.io.IOException
 
 @Component
 class JwtAuthFilter(
-//    private val userDetailsService: UserDetailsServiceImpl,
     private val objectMapper: ObjectMapper
 ): OncePerRequestFilter() {
     @Throws(ServletException::class, IOException::class)
@@ -49,7 +47,7 @@ class JwtAuthFilter(
 
             filterChain.doFilter(request, response)
         } catch (e: AccessDeniedException) {
-            val errorResponse: ApiErrorResponse = ApiErrorResponse(HttpServletResponse.SC_FORBIDDEN, e.stackTraceToString())
+            val errorResponse = ApiErrorResponse(HttpServletResponse.SC_FORBIDDEN, e.stackTraceToString())
             response.status = HttpServletResponse.SC_FORBIDDEN
             response.writer.write(toJson(errorResponse))
         }

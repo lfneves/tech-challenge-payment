@@ -1,4 +1,4 @@
-package com.mvp.order.domain.model.auth
+package com.mvp.payment.domain.model.auth
 
 import io.swagger.v3.oas.annotations.media.Schema
 

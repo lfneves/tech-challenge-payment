@@ -1,6 +1,6 @@
 package com.mvp.payment.application.v1.handler
 
-import com.mvp.order.domain.model.auth.ApiErrorResponse
+import com.mvp.payment.domain.model.auth.ApiErrorResponse
 import com.mvp.payment.domain.model.exception.Exceptions
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

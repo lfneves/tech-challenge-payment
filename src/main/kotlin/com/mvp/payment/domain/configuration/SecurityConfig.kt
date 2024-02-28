@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfig @Autowired constructor(
-//    private val userDetailsService: UserDetailsServiceImpl,
     private val jwtAuthFilter: JwtAuthFilter
 ) {
 
@@ -41,18 +40,7 @@ class SecurityConfig @Autowired constructor(
                     .permitAll()
                     .anyRequest().authenticated()
             }
-//            .authenticationManager(authenticationManager)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
     }
-
-//    @Bean
-//    @Throws(Exception::class)
-//    fun authenticationManager(http: HttpSecurity): AuthenticationManager {
-//        val authenticationManagerBuilder: AuthenticationManagerBuilder = http.getSharedObject(
-//            AuthenticationManagerBuilder::class.java
-//        )
-//        authenticationManagerBuilder.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder())
-//        return authenticationManagerBuilder.build()
-//    }
 }
