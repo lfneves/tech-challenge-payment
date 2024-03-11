@@ -6,4 +6,5 @@ enum class PaymentStatusEnum(val value: String) {
     PREPARING("Preparando"),
     PAID("Pago"),
     FINISHED("Finalizado"),
+    CANCELED("Cancelado"),
 }
