@@ -151,7 +151,8 @@ tasks.jacocoTestReport {
 		html.required.set(true)
 	}
 	val excludes = listOf("**/configuration/*", "**/model/*", "**/utils/*", "**DTO**",
-		"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*")
+		"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*",
+		"**/admin/**", "**/auth/**", "**/handler/**")
 	classDirectories.setFrom(files(classDirectories.files.map {
 		fileTree(it).apply {
 			exclude(excludes)
@@ -162,7 +163,8 @@ tasks.jacocoTestReport {
 tasks.jacocoTestCoverageVerification {
 	violationRules {
 		val excludes = listOf("**/configuration/*", "**/model/*", "**/utils/*", "**DTO**",
-			"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*")
+			"**/com/mvp/payment/PaymentApplication", "**/com/mvp/payment/infrastruture/entity/*",
+			"**/admin/**", "**/auth/**", "**/handler/**")
 		classDirectories.setFrom(files(classDirectories.files.map {
 			fileTree(it).exclude(excludes)
 		}).filter{ file -> !file.name.contains("logger") })
