@@ -128,7 +128,7 @@ jobs:
 #        run: ./gradlew clean test
 
   ecr:
-#    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
