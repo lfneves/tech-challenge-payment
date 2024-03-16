@@ -141,6 +141,9 @@ jobs:
           name: jar-file
           path: build/libs/
 
+      - name: List downloaded artifacts
+        run: ls -l build/libs/
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
