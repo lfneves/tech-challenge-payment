@@ -5,5 +5,5 @@ WORKDIR /app
 COPY build/libs/*.jar /app/app.jar
 RUN ls -la /app/
 
-EXPOSE 8099
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+EXPOSE 8098
+ENTRYPOINT ["java", "-jar", "app.jar"]
