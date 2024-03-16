@@ -48,13 +48,13 @@ jobs:
         working-directory: ${{ github.workspace }}
 
       - name: Copy Jar file
-        run: mv build/libs/*.jar app.jar
+        run: mv build/libs/*.jar build/libs/app.jar
 
       - name: Upload Jar file
         uses: actions/upload-artifact@v2
         with:
           name: jar-file
-          path: app.jar
+          path: build/libs/app.jar
   
   sonarcloud:
     name: Sonar Analyze
@@ -139,7 +139,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar-file
-          path: .
+          path: build/libs/app.jar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
