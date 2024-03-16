@@ -52,3 +52,7 @@ aws:
   region: us-east-1
   topicArn: "${TOPIC_ORDER_SNS:arn:aws:sns:us-east-1:1111111:ORDER_TOPIC}"
   statusQueue: "${STATUS_QUEUE:https://sqs.us-east-1.amazonaws.com/1111111/STATUS_QUEUE}"
+
+jwt:
+  # Development secret key, set new value production
+  secret: "${SECRET_KEY:eW91ci12ZXJ5LWxvbmctc2VjcmV0LXN0cmluZy1oZXJlLWRlZmF1bHQtZGV2LXZhbHVl}"
