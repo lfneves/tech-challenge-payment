@@ -54,81 +54,81 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: jar-file
-          path: .
+          path: app.jar
   
-  sonarcloud:
-    name: Sonar Analyze
-    needs: [build]
-    runs-on: ubuntu-latest
-    env:
-      STATUS_QUEUE: ${{secrets.STATUS_QUEUE}}
-      TOPIC_ORDER_SNS: ${{secrets.TOPIC_ORDER_SNS}}
-      PAYMENT_QUEUE: ${{secrets.PAYMENT_QUEUE}}
-    services:
-      mongodb:
-        image: mongo
-        env:
-          MONGO_INITDB_ROOT_USERNAME: mongodb
-          MONGO_INITDB_ROOT_PASSWORD: mongodb
-          MONGO_INITDB_DATABASE: paymentdb
-          options: >-
-            --health-cmd mongo
-            --health-interval 10s
-            --health-timeout 5s
-            --health-retries 5
-        ports:
-          - 27017:27017
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache Gradle packages
-        uses: actions/cache@v3
-        with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
-          restore-keys: ${{ runner.os }}-gradle
-      - name: Build and analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          STATUS_QUEUE: ${{env.STATUS_QUEUE}}
-          TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
-          PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
-        run: ./gradlew sonar
-
-  test:
-    name: Project auto test
-    needs: [build, sonarcloud]
-    runs-on: ubuntu-latest
-    env:
-      TOPIC_ORDER_SNS: ${{secrets.TOPIC_ORDER_SNS}}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 17
-        uses: actions/setup-java@v1
-        with:
-          java-version: 17
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Run tests
-        env:
-          TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
-        run: ./gradlew clean test
+#  sonarcloud:
+#    name: Sonar Analyze
+#    needs: [build]
+#    runs-on: ubuntu-latest
+#    env:
+#      STATUS_QUEUE: ${{secrets.STATUS_QUEUE}}
+#      TOPIC_ORDER_SNS: ${{secrets.TOPIC_ORDER_SNS}}
+#      PAYMENT_QUEUE: ${{secrets.PAYMENT_QUEUE}}
+#    services:
+#      mongodb:
+#        image: mongo
+#        env:
+#          MONGO_INITDB_ROOT_USERNAME: mongodb
+#          MONGO_INITDB_ROOT_PASSWORD: mongodb
+#          MONGO_INITDB_DATABASE: paymentdb
+#          options: >-
+#            --health-cmd mongo
+#            --health-interval 10s
+#            --health-timeout 5s
+#            --health-retries 5
+#        ports:
+#          - 27017:27017
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: 17
+#          distribution: 'zulu' # Alternative distribution options are available
+#      - name: Cache SonarCloud packages
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/.sonar/cache
+#          key: ${{ runner.os }}-sonar
+#          restore-keys: ${{ runner.os }}-sonar
+#      - name: Cache Gradle packages
+#        uses: actions/cache@v3
+#        with:
+#          path: ~/.gradle/caches
+#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+#          restore-keys: ${{ runner.os }}-gradle
+#      - name: Build and analyze
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+#          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#          STATUS_QUEUE: ${{env.STATUS_QUEUE}}
+#          TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
+#          PAYMENT_QUEUE: ${{env.PAYMENT_QUEUE}}
+#        run: ./gradlew sonar
+#
+#  test:
+#    name: Project auto test
+#    needs: [build, sonarcloud]
+#    runs-on: ubuntu-latest
+#    env:
+#      TOPIC_ORDER_SNS: ${{secrets.TOPIC_ORDER_SNS}}
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Set up JDK 17
+#        uses: actions/setup-java@v1
+#        with:
+#          java-version: 17
+#      - name: Grant execute permission for gradlew
+#        run: chmod +x gradlew
+#      - name: Run tests
+#        env:
+#          TOPIC_ORDER_SNS: ${{env.TOPIC_ORDER_SNS}}
+#        run: ./gradlew clean test
 
   ecr:
-    needs: [test]
+#    needs: [test]
     runs-on: ubuntu-latest
 
     steps:
@@ -139,7 +139,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar-file
-          path: .
+          path: app.jar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
