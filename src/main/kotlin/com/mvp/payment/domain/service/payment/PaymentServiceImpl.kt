@@ -54,7 +54,7 @@ class PaymentServiceImpl(
         try {
             val order = orderRepository.findByExternalId(orderCheckoutDTO.externalId)
             if (!order.isPresent) {
-                throw Exception(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
+                throw Exceptions.NotFoundException(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
             } else {
                 val randomMinutes = (20..75).random().toLong()
                 val updatedOrder = order.get().copy(
@@ -69,7 +69,7 @@ class PaymentServiceImpl(
             }
         } catch (e: Exception) {
             logger.info("ERROR PaymentServiceImpl - fakeCheckoutOrder {}", e.printStackTrace())
-            throw Exceptions.RequestedElementNotFoundException(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
+            throw Exceptions.NotFoundException(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
         }
     }
 
@@ -78,7 +78,7 @@ class PaymentServiceImpl(
         try {
             val order = orderRepository.findByExternalId(orderCheckoutDTO.externalId)
             if (!order.isPresent) {
-                throw Exception(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
+                throw Exceptions.NotFoundException(ErrorMsgConstants.ERROR_ORDER_NOT_FOUND)
             } else {
                 val updatedOrder = order.get().copy(
                     status = PaymentStatusEnum.FINISHED.value,
@@ -94,9 +94,9 @@ class PaymentServiceImpl(
                     externalId = statusDTO.externalId
                 )
             }
-        } catch (e: Exception) {
+        } catch (e: Exceptions.NotFoundException) {
             logger.info("ERROR PaymentServiceImpl - finishedOrderWithPayment {}", e.printStackTrace())
-            throw Exception(ErrorMsgConstants.ERROR_ORDER_CHECKOUT)
+            throw Exceptions.NotFoundException(ErrorMsgConstants.ERROR_ORDER_CHECKOUT)
         }
     }
 }

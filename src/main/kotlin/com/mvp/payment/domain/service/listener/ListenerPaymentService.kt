@@ -37,7 +37,7 @@ class ListenerPaymentService {
         val savedOrder = orderRepository.save(OrderEntity.fromOrderNotification(notificationMessage))
 
         notificationMessage.orderNotification?.orderDTO?.productList?.forEach { product ->
-            product.idOrder = savedOrder.id.toString()
+            product.idOrder = savedOrder.id
             product.externalId = savedOrder.externalId
             productRepository.save(product)
         }
