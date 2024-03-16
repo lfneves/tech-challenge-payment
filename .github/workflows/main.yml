@@ -139,7 +139,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar-file
-          path: app.jar
+          path: build/libs/app.jar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
