@@ -128,7 +128,7 @@ jobs:
 #        run: ./gradlew clean test
 
   ecr:
-#    needs: [test]
+    needs: [build]
     runs-on: ubuntu-latest
 
     steps:
@@ -139,7 +139,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar-file
-          path: app.jar
+          path: build/libs/app.jar
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
