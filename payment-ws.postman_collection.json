@@ -1,0 +1,152 @@
+{
+	"info": {
+		"_postman_id": "47a26531-967d-4229-a70f-f5188dd5220c",
+		"name": "payment-ws",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2770209"
+	},
+	"item": [
+		{
+			"name": "Mercado Pago",
+			"item": [
+				{
+					"name": "checkout pedido",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"externalId\": \"cdfe4e61-ec36-4a7c-933e-d49d75af963e\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{payment}}/api/v1/payment/qr-code-checkout",
+							"host": [
+								"{{payment}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payment",
+								"qr-code-checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "fake checkout pedido",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"externalId\": \"69b47112-6590-4a08-935a-af93b30ff8c8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{payment}}/api/v1/payment/fake-checkout",
+					"host": [
+						"{{payment}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment",
+						"fake-checkout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "fake-finish-payment",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"externalId\": \"69b47112-6590-4a08-935a-af93b30ff8c8\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{payment}}/api/v1/payment/fake-finish-payment",
+					"host": [
+						"{{payment}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"payment",
+						"fake-finish-payment"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
